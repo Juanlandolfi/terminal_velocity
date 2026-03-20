@@ -11,6 +11,8 @@ from tv.game import (
     ENGINES,
     SHIELDS,
     LASERS,
+    MAX_POWER,
+    MAX_CARGO,
     Position,
     Player,
 )
@@ -114,11 +116,11 @@ class TerminalVelocityUI:
 
         for player in self.game.players.values():
             player_line = (
-                f"E{player.power_distribution[ENGINES] * '>':<4} "
-                f"S{player.power_distribution[SHIELDS] * '>':<4} "
-                f"L{player.power_distribution[LASERS] * '>':<4} "
-                f"C{player.cargo * '{}':<8} "
-                f"{player.hp}+ "
+                f"E{player.power_distribution[ENGINES] * '|':<3} "
+                f"S{player.power_distribution[SHIELDS] * '|':<3} "
+                f"L{player.power_distribution[LASERS] * '|':<3} "
+                f"C{player.cargo * '{}':<4} "
+                f"{player.hp}hp "
                 f"{player.score}$"
                 f"{self.term.clear_eol}"
             )
