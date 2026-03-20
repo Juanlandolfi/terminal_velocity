@@ -1,6 +1,6 @@
 # Terminal Velocity
 
-<video src="https://i.imgur.com/s9WC3h4.mp4" width=500></video>
+<video src="https://github.com/user-attachments/assets/5aeb7f9b-fa32-45d4-a5a3-fbbbc0879d34" width=500></video>
 
 A small game for a PyCamp. Build your own bot, play against bots from other people :)
 
