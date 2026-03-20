@@ -31,7 +31,7 @@ MAX_CARGO = 2
 HOME_BASE_RADIUS = 2
 RADAR_RADIUS = 3
 ATTACK_RADIUS = 2
-ASTEROIDS_FACTOR = 4
+ASTEROIDS_FACTOR = 5
 
 
 Position = namedtuple("Position", "x y")
