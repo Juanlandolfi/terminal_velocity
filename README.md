@@ -160,4 +160,8 @@ uv run play.py --players Alice:my_bot,Bob:my_bot,Charlie:my_bot
 # Game options
 
 The game allows you to configure a few things with optional command arguments. 
-Check them out with `uv run play.py --help`.
+Check them out with:
+
+```bash
+uv run play.py --help
+```
