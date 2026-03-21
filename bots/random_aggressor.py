@@ -8,9 +8,9 @@ class BotLogic:
     """
     def initialize(self, map_radius, players, turns, home_base_positions):
         """
-        This bot doesn't need to initialize anything.
+        This bot doesn't need to initialize anything except using a custom icon.
         """
-        pass
+        self.icon = "><"
 
     def turn(self, turn_number, hp, ship_number, cargo, position, power_distribution, radar_contacts, leader_board):
         """

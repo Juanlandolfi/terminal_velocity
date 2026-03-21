@@ -191,6 +191,11 @@ from tv.game import (
 All the positions the game gives you in the inputs (the spaceship position, the keys in the radar 
 contacts dict, etc) are instances of `Position`.
 
+### Custom spaceship icon!
+
+Your bot can specify a value for `self.icon`. If specified, it must be a string of length 2, and
+it will be used when drawing the game. It can even change from turn to turn!! :D
+
 # Game options
 
 The game allows you to configure a few things with optional command arguments. 

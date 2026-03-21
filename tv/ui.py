@@ -18,6 +18,16 @@ from tv.game import (
     Player,
 )
 
+def get_player_icon(player):
+    """
+    Get the player icon, or a default if undefined/invalid.
+    """
+    icon = getattr(player.bot_logic, "icon", None)
+    if not icon or not isinstance(icon, str) or len(icon) != 2:
+        icon = "<>"
+
+    return icon
+
 
 class TerminalVelocityUI:
     """
@@ -95,7 +105,7 @@ class TerminalVelocityUI:
                 thing = world.get(Position(x, y))
 
                 if isinstance(thing, Player):
-                    icon = "<>"
+                    icon = get_player_icon(thing)
                     color = self.player_colors[thing.name]
                     if thing.name in winner_names and blink_winners:
                         color = self.term.black
@@ -127,7 +137,8 @@ class TerminalVelocityUI:
             else:
                 winner_message = ""
 
-            player_line = f"{player} {player.kills}/{player.ship_number - 1}🕱 {player.delivered_asteroids}{{}}{self.term.clear_eol} {player.credits}$"
+            icon = get_player_icon(player)
+            player_line = f"{icon} {player} {player.kills}/{player.ship_number - 1}🕱 {player.delivered_asteroids}{{}}{self.term.clear_eol} {player.credits}$"
             engines_bar = (player.power_distribution[ENGINES] * '█').ljust(MAX_POWER, '▒')
             shields_bar = (player.power_distribution[SHIELDS] * '█').ljust(MAX_POWER, '▒')
             lasers_bar = (player.power_distribution[LASERS] * '█').ljust(MAX_POWER, '▒')

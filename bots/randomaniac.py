@@ -7,6 +7,7 @@ class BotLogic:
     """
     A bot that just moves randomly and reconfigures the spaceship randomly.
     """
+
     def initialize(self, map_radius, players, turns, home_base_positions):
         """
         This bot doesn't need to initialize anything.
@@ -17,6 +18,10 @@ class BotLogic:
         """
         This bot chooses its actions completely at random.
         """
+        # randomize the icon
+        chars = "<>()[]/+-o8%#"
+        self.icon = random.choice(chars) + random.choice(chars)
+
         if random.random() < 0.8:
             # move to a random destination
             speed = power_distribution[ENGINES]
