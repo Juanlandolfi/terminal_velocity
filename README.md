@@ -1,6 +1,6 @@
 # Terminal Velocity
 
-<video autoplay loop muted playsinline src="https://github.com/user-attachments/assets/a38df482-3dc2-4c78-a26f-5a1b38e84169" width=500></video>
+<video autoplay loop muted playsinline src="https://github.com/user-attachments/assets/0ad0b3e9-c04c-4794-ae3e-078f24764000" width=500></video>
 
 A small game for a PyCamp. Build your own bot, play against bots from other people :)
 
