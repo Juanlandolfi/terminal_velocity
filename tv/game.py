@@ -6,7 +6,7 @@ from collections import namedtuple
 from functools import lru_cache
 from itertools import product
 
-from tv.isolation import RemoteBotLogicClient
+from tv.isolation import RemoteBotLogicClient, RemoteBotError, RemoteBotTimmeout
 
 # objects in radar
 SPACESHIP = "spaceship"
@@ -322,16 +322,21 @@ class TerminalVelocity:
         A player takes its turn to play.
         """
         logging.info("%s calling turn() function", player)
-        action = player.bot_logic.turn(
-            turn_number=turn_number,
-            hp=player.hp,
-            ship_number=player.ship_number,
-            cargo=player.cargo,
-            position=player.position,
-            power_distribution=player.power_distribution.copy(),
-            radar_contacts=self.get_radar_contacts(player),
-            leader_board={p.name: p.credits for p in self.players.values()},
-        )
+        try:
+            action = player.bot_logic.turn(
+                turn_number=turn_number,
+                hp=player.hp,
+                ship_number=player.ship_number,
+                cargo=player.cargo,
+                position=player.position,
+                power_distribution=player.power_distribution.copy(),
+                radar_contacts=self.get_radar_contacts(player),
+                leader_board={p.name: p.credits for p in self.players.values()},
+            )
+        except RemoteBotError as err:
+            return False, "remote bot error: " + str(err)
+        except RemoteBotTimmeout:
+            return False, "remote bot didn't answer in time"
 
         if action:
             logging.info("%s requested action: %s", player, action)
@@ -353,7 +358,7 @@ class TerminalVelocity:
         """
         Fly to the specified position.
         """
-        if not isinstance(destination, tuple) or not len(destination) == 2:
+        if not isinstance(destination, (tuple, list)) or not len(destination) == 2:
             return False, f"fly_to destinaton is not a valid position: {destination}"
 
         if not isinstance(destination, Position):
