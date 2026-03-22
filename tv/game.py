@@ -33,7 +33,7 @@ PIRATING_REWARD = 0.1
 HOME_BASE_RADIUS = 2
 RADAR_RADIUS = 3
 ATTACK_RADIUS = 2
-ASTEROIDS_FACTOR = 5
+ASTEROIDS_DENSITY = 0.05
 
 
 class Position(namedtuple("Position", "x y")):
@@ -146,7 +146,9 @@ class TerminalVelocity:
         self.home_base_positions_cache = set(self.home_base_center.positions_in_range(HOME_BASE_RADIUS))
         self.home_base_positions_cache.add(self.home_base_center)
         self.asteroids = set()
-        self.required_asteroid_count = ASTEROIDS_FACTOR * len(self.players)
+        # asteroid quantity based on the density
+        map_tiles = (map_radius * 2 + 1) ** 2
+        self.required_asteroid_count = int(map_tiles * ASTEROIDS_DENSITY)
 
         # execution parameters
         self.ui = ui
