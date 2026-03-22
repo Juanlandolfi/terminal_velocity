@@ -81,7 +81,7 @@ class RemoteBotLogicClient:
             shell=True,
         )
 
-        time.sleep(1)  # give the container some time to start
+        time.sleep(0.5)  # give the container some time to start
 
         # connect to the remote bot
         context = zmq.Context()
