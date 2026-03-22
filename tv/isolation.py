@@ -5,7 +5,7 @@ import time
 import zmq
 
 
-TURN_TIMEOUT = 1000  # ms
+TURN_TIMEOUT = 200  # ms
 INITIALIZE_TIMEOUT = 3000  # ms
 
 
