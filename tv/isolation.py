@@ -1,4 +1,5 @@
 import json
+import logging
 import subprocess
 import time
 from uuid import uuid4
@@ -8,6 +9,7 @@ import zmq
 
 TURN_TIMEOUT = 200  # ms
 INITIALIZE_TIMEOUT = 3000  # ms
+CONTAINER_NAME_PREFFIX = "terminal-velocity-bot-server-"
 
 
 class RemoteBotError(Exception):
@@ -34,7 +36,6 @@ class RemoteBotLogicClient:
     def __init__(self, bot_type):
         self.bot_type = bot_type
         self.port = None
-        self.bot_server_process = None
         self.socket = None
 
     def initialize(self, player_name, map_radius, players, turns, home_base_positions):
@@ -76,8 +77,8 @@ class RemoteBotLogicClient:
         RemoteBotLogicClient.LAST_USED_PORT = self.port
 
         # launch the container with the bot
-        self.bot_server_process = subprocess.Popen(
-            f"docker run --rm --name {self.bot_type}-{uuid4()} -p {self.port}:5000 terminal-velocity-bot-server --bot-type {self.bot_type} --port 5000",
+        subprocess.Popen(
+            f"docker run --rm --name {CONTAINER_NAME_PREFFIX}{self.bot_type}-{uuid4()} -p {self.port}:5000 terminal-velocity-bot-server --bot-type {self.bot_type} --port 5000",
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, stdin=subprocess.DEVNULL,
             shell=True,
         )
@@ -88,12 +89,6 @@ class RemoteBotLogicClient:
         context = zmq.Context()
         self.socket = context.socket(zmq.REQ)
         self.socket.connect(f"tcp://localhost:{self.port}")
-
-    def stop_bot_server(self):
-        """
-        Stop the docker container running the bot logic.
-        """
-        self.bot_server_process.kill()
 
     def remote_call(self, method_name, kw_args, timeout):
         """
@@ -110,6 +105,31 @@ class RemoteBotLogicClient:
             return result["return_value"]
         else:
             raise RemoteBotError(result["error"])
+
+
+def start_isolated_players(players):
+    """
+    Launch all the docker containers for the bots and connect to them.
+    """
+    # just in case, stop any previously running containers with the same preffix
+    stop_isolated_players()
+
+    logging.info("starting isolated bots")
+    for player in players:
+        player.bot_logic.start_bot_server()
+
+
+def stop_isolated_players():
+    """
+    Stop all the docker containers for the bots.
+    """
+    logging.info("stopping isolated bots")
+    # docker stop $(docker ps -aq --filter "name=tvbs-*")
+    subprocess.run(
+        f"docker stop $(docker ps -aq --filter \"name={CONTAINER_NAME_PREFFIX}*\")",
+        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        shell=True,
+    )
 
 
 def bot_server(bot_type, port):

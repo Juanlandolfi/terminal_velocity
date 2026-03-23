@@ -6,7 +6,7 @@ from collections import namedtuple
 from functools import lru_cache
 from itertools import product
 
-from tv.isolation import RemoteBotLogicClient, RemoteBotError, RemoteBotTimmeout
+from tv import isolation
 
 # objects in radar
 SPACESHIP = "spaceship"
@@ -78,7 +78,7 @@ class Player:
         self.bot_type = bot_type
 
         if isolated:
-            self.bot_logic = RemoteBotLogicClient(bot_type)
+            self.bot_logic = isolation.RemoteBotLogicClient(bot_type)
         else:
             self.bot_logic = Player.import_bot_logic(bot_type)
 
@@ -222,9 +222,7 @@ class TerminalVelocity:
             winners = None
 
             if self.isolated:
-                logging.info("starting isolated bots")
-                for player in self.players.values():
-                    player.bot_logic.start_bot_server()
+                isolation.start_isolated_players(self.players.values())
 
             logging.info("initializing player bots logic")
             for player in self.players.values():
@@ -273,9 +271,7 @@ class TerminalVelocity:
                 self.ui.render(turn_number, winners)
         finally:
             if self.isolated:
-                logging.info("stopping isolated bots")
-                for player in self.players.values():
-                    player.bot_logic.stop_bot_server()
+                isolation.stop_isolated_players()
 
         return winners
 
@@ -336,10 +332,10 @@ class TerminalVelocity:
                 radar_contacts=self.get_radar_contacts(player),
                 leader_board={p.name: p.credits for p in self.players.values()},
             )
-        except RemoteBotError as err:
+        except isolation.RemoteBotError as err:
             self.events.append(f"{player.name} error! {err}")
             return False, "remote bot error: " + str(err)
-        except RemoteBotTimmeout:
+        except isolation.RemoteBotTimmeout:
             self.events.append(f"{player.name} timeout!")
             return False, "remote bot didn't answer in time"
 
