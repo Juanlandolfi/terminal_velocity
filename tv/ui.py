@@ -182,13 +182,14 @@ class TerminalVelocityUI:
         events_start_row = players_last_row + 3
         events_count = map_last_row - events_start_row
 
-        for idx, event in enumerate(self.game.events[-events_count:]):
-            event_row = events_start_row + idx
+        if events_count > 0:
+            for idx, event in enumerate(self.game.events[-events_count:]):
+                event_row = events_start_row + idx
 
-            print(
-                self.term.move(event_row, column),
-                event, self.term.clear_eol,
-            )
+                print(
+                    self.term.move(event_row, column),
+                    event, self.term.clear_eol,
+                )
 
     @contextmanager
     def show(self):
