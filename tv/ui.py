@@ -2,6 +2,7 @@ from contextlib import contextmanager
 from itertools import cycle
 from time import sleep
 import curses
+import unicodedata
 
 from blessings import Terminal
 
@@ -19,13 +20,21 @@ from tv.game import (
     Player,
 )
 
+NORMAL_LETTER_WIDTH = unicodedata.east_asian_width("a")
+DEFAULT_SHIP_ICON = "<>"
+
 def get_player_icon(player):
     """
     Get the player icon, or a default if undefined/invalid.
     """
     icon = getattr(player.bot_logic, "icon", None)
     if not icon or not isinstance(icon, str) or len(icon) != 2:
-        icon = "<>"
+        return DEFAULT_SHIP_ICON
+
+    for char in icon:
+        # are the chars the same length than single chars in a terminal?
+        if unicodedata.east_asian_width(char) != NORMAL_LETTER_WIDTH:
+            return DEFAULT_SHIP_ICON
 
     return icon
 
@@ -173,13 +182,14 @@ class TerminalVelocityUI:
         events_start_row = players_last_row + 3
         events_count = map_last_row - events_start_row
 
-        for idx, event in enumerate(self.game.events[-events_count:]):
-            event_row = events_start_row + idx
+        if events_count > 0:
+            for idx, event in enumerate(self.game.events[-events_count:]):
+                event_row = events_start_row + idx
 
-            print(
-                self.term.move(event_row, column),
-                event, self.term.clear_eol,
-            )
+                print(
+                    self.term.move(event_row, column),
+                    event, self.term.clear_eol,
+                )
 
     @contextmanager
     def show(self):
