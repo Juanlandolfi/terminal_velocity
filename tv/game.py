@@ -405,6 +405,9 @@ class TerminalVelocity:
         if any(power < 0 for power in power_distribution.values()):
             return False, f"power_to can't use negative power: {power_distribution}"
 
+        if any(math.isnan(power) for power in power_distribution.values()):
+            return False, f"power_to can't use NaN power values: {power_distribution}"
+
         player.power_distribution = power_distribution
         return True, f"power_to applied new power distribution: {power_distribution}"
 
