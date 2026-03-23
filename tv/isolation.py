@@ -76,7 +76,7 @@ class RemoteBotLogicClient:
 
         # launch the container with the bot
         self.bot_server_process = subprocess.Popen(
-            f"docker run -p {self.port}:5000 terminal-velocity-bot-server --bot-type {self.bot_type} --port 5000",
+            f"docker run --rm -p {self.port}:5000 terminal-velocity-bot-server --bot-type {self.bot_type} --port 5000",
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, stdin=subprocess.DEVNULL,
             shell=True,
         )
